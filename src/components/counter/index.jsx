@@ -1,10 +1,11 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { decrement, increment } from '../../reducers/counterSlice'
+import React, {useState} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment, incrementByAmount } from "../../actions";
 
 const Counter = () => {
-  const count = useSelector((state) => state.counter.value)
-  const dispatch = useDispatch()
+  const [number, setNumber] = useState(0);
+  const count = useSelector((state) => state.counter2.value);
+  const dispatch = useDispatch();
 
   return (
     <div>
@@ -23,7 +24,9 @@ const Counter = () => {
           Decrement
         </button>
       </div>
+      <input value={number} onChange={(e)=>{setNumber(e.target.value)}} />
+      <button onClick={()=>{dispatch(incrementByAmount(parseInt(number)))}}>Click me</button>
     </div>
-  )
-}
-export default Counter
+  );
+};
+export default Counter;
