@@ -1,10 +1,14 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { searchNews, fetchMoreNews } from "../../actions"
 import { newsAPI } from "../../api"
 
 function SearchNews(props) {
     const [search, setSearch] = useState('')
-    const [searchData, setSearchData] = useState([])
+    const searchList = useSelector(state => state.news.newsList)
+    const dispatch = useDispatch()
     const [language, setLanguage] = useState('en')
+    const [page, setPage]= useState(1)
 
     function onSearchChange(e) {
         setSearch(e.target.value) 
@@ -13,20 +17,28 @@ function SearchNews(props) {
     function onFinish(e) {
         if(e.key === 'Enter'){
             //fetch data
-            console.log('fetch', search, language)
-            newsAPI.get(`everything?q=${search}&language=${language}&apiKey=9a60aff57a4040f190b175c5c0a9d25f`)
+            newsAPI.get(`everything?q=${search}&language=${language}&page=${page}&apiKey=9a60aff57a4040f190b175c5c0a9d25f`)
             .then((result)=>{
-                setSearchData(result.data.articles)
+                dispatch(searchNews(result.data.articles))
             })
             
         }
     }
 
+    useEffect(()=>{
+        async function fetch() {
+            newsAPI.get(`everything?q=${search}&language=${language}&page=${page}&apiKey=9a60aff57a4040f190b175c5c0a9d25f`)
+            .then((result)=>{
+                dispatch(fetchMoreNews(result.data.articles))
+            })
+        }
+        fetch()
+    },[page])
+
     function onLanguageSelect(e) {
-        console.log(e.target.value)
         setLanguage(e.target.value)
     }
-
+    console.log(searchList)
     return <div>
         <label>Search:</label>
         <input value={search} onChange={onSearchChange} onKeyPress={onFinish}/>
@@ -43,14 +55,29 @@ function SearchNews(props) {
             <option value='zh'>Lets see</option>
         </select>
         <br/>
-        <div>
-            {searchData.map((article)=>{
-                return <div>
+        <div style={{
+            display: 'flex',
+            width: '100%',
+            flexWrap: 'wrap',
+            justifyContent: 'center'
+        }}>
+            {searchList.map((article, index)=>{
+                return <div style={{
+                    width: '400px',
+                    height: '200px'
+
+                }}
+                key={index}
+                >
                     <p>{article.title}</p>
                     <p>{article.author}</p>
                     <br></br>
+                    <button>Show me</button>
                 </div>
             })}
+        </div>
+        <div>
+            <button onClick={()=>setPage(page+1)}>Load More</button>
         </div>
     </div>
     
