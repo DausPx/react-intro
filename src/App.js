@@ -1,15 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
-import Counter from './components/counter';
-import counterSlice from './reducers/counterSlice';
+import { Route, Routes } from "react-router";
+import "./App.css";
 
+import SearchNews from "./components/searchNews";
 
 function App() {
-
-  
   return (
     <div className="App">
-      <Counter />
+      <Routes>
+        <Route path="/search" element={<SearchNews />} />
+        <Route path="/search/:articleID" element={<></>} />
+      </Routes>
     </div>
   );
 }
