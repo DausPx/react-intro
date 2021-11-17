@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { searchNews, fetchMoreNews } from "../../actions"
+import {  useNavigate } from "react-router"
+import { Link } from "react-router-dom"
+import { searchNews, fetchMoreNews, showArticle } from "../../actions"
 import { newsAPI } from "../../api"
 
 function SearchNews(props) {
@@ -9,6 +11,7 @@ function SearchNews(props) {
     const dispatch = useDispatch()
     const [language, setLanguage] = useState('en')
     const [page, setPage]= useState(1)
+    const navigate = useNavigate()
 
     function onSearchChange(e) {
         setSearch(e.target.value) 
@@ -72,7 +75,11 @@ function SearchNews(props) {
                     <p>{article.title}</p>
                     <p>{article.author}</p>
                     <br></br>
-                    <button>Show me</button>
+                    <button onClick={()=>{
+                        dispatch(showArticle(article))
+                        navigate('../article',{state:{...article} })
+                    }}>Show me</button>
+                    <Link to={`../article/${index}`} >Article</Link>
                 </div>
             })}
         </div>

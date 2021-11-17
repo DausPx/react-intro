@@ -19,3 +19,7 @@ export function searchNews(newsList){
 export function fetchMoreNews(newsList){
   return {type: 'news/fetchmore', payload: newsList}
 }
+
+export function showArticle(article){
+  return {type: "news/setArticle", payload: article}
+}
